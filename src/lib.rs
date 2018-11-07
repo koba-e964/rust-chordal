@@ -47,6 +47,7 @@ pub fn is_chordal(g: &Graph) -> bool {
 /// Maximum cardinality search
 /// Reference: http://chocobaby-aporo.hatenablog.com/entry/2017/11/12/094759
 /// (written in Japanese)
+/// Complexity: O(E log V)
 pub fn get_perfect_elimination_ordering(g: &Graph) -> Option<Vec<usize>> {
     let n = g.len();
     let mut que = BinaryHeap::new();
@@ -90,7 +91,7 @@ mod tests {
         }
         g
     }
-    // This takes O(V + E).
+    // This takes O(V * E).
     fn naive_is_peo(g: &Graph, peo: &[usize]) -> bool {
         let n = g.len();
         let mut g_set = vec![HashSet::new(); n];
