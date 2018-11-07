@@ -4,6 +4,7 @@ use std::collections::{BinaryHeap, HashSet};
 pub type Graph = Vec<Vec<usize>>;
 
 // Given a graph and reversed peo, checks if peo is a reversed PEO.
+// O(V + E)-time
 fn check_peo(g: &Graph, rev_peo: &[usize]) -> bool {
     let n = g.len();
     let mut inv_rev_peo = vec![0; n];
@@ -145,5 +146,14 @@ mod tests {
         assert!(is_chordal(&g));
         let peo = get_perfect_elimination_ordering(&g).unwrap();
         assert!(naive_is_peo(&g, &peo));
+    }
+    // This example is taken from http://chocobaby-aporo.hatenablog.com/entry/2017/11/12/094759.
+    #[test]
+    fn sample_not_chordal_1() {
+        let g = make_graph(9, &[(0, 1), (0, 2), (0, 3), (0, 5), (1, 2),
+                                (1, 4), (1, 5), (1, 6), (2, 3), (3, 4),
+                                (3, 6), (3, 8), (4, 8), (5, 6), (6, 7),
+                                (7, 8)]);
+        assert_eq!(get_perfect_elimination_ordering(&g), None);
     }
 }
