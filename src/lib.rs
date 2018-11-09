@@ -1,4 +1,4 @@
-use std::collections::{BinaryHeap, HashSet};
+use std::collections::{HashSet};
 
 // Adjacency list
 pub type Graph = Vec<Vec<usize>>;
@@ -48,29 +48,63 @@ pub fn is_chordal(g: &Graph) -> bool {
 /// Maximum cardinality search
 /// Reference: http://chocobaby-aporo.hatenablog.com/entry/2017/11/12/094759
 /// (written in Japanese)
-/// Complexity: O(E log V)
+/// Complexity: O(V + E)
 pub fn get_perfect_elimination_ordering(g: &Graph) -> Option<Vec<usize>> {
     let n = g.len();
-    let mut que = BinaryHeap::new();
-    let mut comm = vec![0; n]; // |N(v) /\ Y|
-    let mut remaining = n;
-    let mut processed = vec![false; n];
     let mut peo = Vec::new();
-    for i in 0 .. n {
-        que.push((0, i));
+    // State
+    struct State {
+        border: Vec<usize>,
+        arr: Vec<(usize, usize)>,
+        comm: Vec<usize>,
+        processed: Vec<bool>,
+        inv: Vec<usize>,
+        remaining: usize,
     }
-    while let Some((_common_cardinality, index)) = que.pop() {
-        if remaining == 0 { break; }
-        if processed[index] { continue; }
-        processed[index] = true;
-        peo.push(index);
-        for &w in g[index].iter() {
-            if !processed[w] {
-                comm[w] += 1;
-                que.push((comm[w], w));
+    impl State {
+        fn increment(&mut self, idx: usize) {
+            let pos = self.inv[idx];
+            let staging = self.border[self.comm[idx] + 1] - 1;
+            let staging_idx = self.arr[staging].0;
+            self.arr.swap(pos, staging);
+            self.inv.swap(idx, staging_idx);
+            self.arr[staging].1 += 1;
+            self.border[self.comm[idx] + 1] -= 1;
+            self.comm[idx] += 1;
+            if self.border[self.comm[idx]] == self.remaining - 1 {
+                let max = self.comm[idx];
+                self.border[max + 1] = self.remaining;
             }
         }
-        remaining -= 1;
+        fn pop_max(&mut self) -> usize {
+            let index = self.remaining - 1;
+            let max = self.arr[index].1;
+            let comm_index = self.arr[index].0;
+            self.border[max + 1] -= 1;
+            if self.remaining > 0 { self.remaining -= 1; }
+            self.processed[comm_index] = true;
+            comm_index
+        }
+    }
+    let mut state = State {
+        border: vec![0; n + 1],
+        arr: vec![(0, 0); n],
+        comm: vec![0; n], // |N(v) /\ Y|
+        processed: vec![false; n],
+        inv: vec![0; n],
+        remaining: n,
+    };
+    for i in 0 .. n { state.arr[i] = (i, 0); }
+    state.border[1] = n;
+    for i in 0 .. n { state.inv[i] = i; }
+    for _ in 0 .. n {
+        let index = state.pop_max();
+        peo.push(index);
+        for &w in g[index].iter() {
+            if !state.processed[w] {
+                state.increment(w);
+            }
+        }
     }
     if check_peo(g, &peo) {
         peo.reverse();
