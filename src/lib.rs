@@ -198,4 +198,16 @@ mod tests {
         let peo = get_perfect_elimination_ordering(&g).unwrap();
         assert!(naive_is_peo(&g, &peo));
     }
+    #[test]
+    fn test_check_peo() {
+        let g = make_graph(4, &[(0, 1), (1, 2), (2, 3), (3, 0), (0, 2)]);
+        let mut not_peo = vec![0, 1, 2, 3];
+        assert!(!naive_is_peo(&g, &not_peo));
+        not_peo.reverse();
+        assert!(!check_peo(&g, &not_peo));
+        let mut peo = vec![1, 0, 2, 3];
+        assert!(naive_is_peo(&g, &peo));
+        peo.reverse();
+        assert!(check_peo(&g, &peo));
+    }
 }
