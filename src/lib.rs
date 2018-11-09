@@ -190,4 +190,12 @@ mod tests {
                                 (7, 8)]);
         assert_eq!(get_perfect_elimination_ordering(&g), None);
     }
+    #[test]
+    fn sample_chordal_but_not_interval() {
+        let g = make_graph(6, &[(0, 1), (1, 2), (2, 3), (3, 4), (4, 5),
+                                (5, 0), (0, 2), (2, 4), (4, 0)]);
+        assert!(is_chordal(&g));
+        let peo = get_perfect_elimination_ordering(&g).unwrap();
+        assert!(naive_is_peo(&g, &peo));
+    }
 }
