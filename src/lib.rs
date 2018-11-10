@@ -1,4 +1,7 @@
-use std::collections::{HashSet};
+use std::collections::HashSet;
+
+pub mod dataset;
+
 
 // Adjacency list
 pub type Graph = Vec<Vec<usize>>;
@@ -117,6 +120,7 @@ pub fn get_perfect_elimination_ordering(g: &Graph) -> Option<Vec<usize>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use ::dataset;
     use std::collections::HashSet;
     fn make_graph(n: usize, edges: &[(usize, usize)]) -> Graph {
         let mut g = vec![Vec::new(); n];
@@ -209,5 +213,31 @@ mod tests {
         assert!(naive_is_peo(&g, &peo));
         peo.reverse();
         assert!(check_peo(&g, &peo));
+    }
+    // Reads graphs from a dataset in graph6 format.
+    // Datasets are from https://users.cecs.anu.edu.au/~bdm/data/graphs.html.
+    fn test_dataset(filename: &str) {
+        let graphs = dataset::read_from_file(filename).unwrap();
+        for graph in graphs {
+            assert!(is_chordal(&graph));
+            let peo = get_perfect_elimination_ordering(&graph).unwrap();
+            assert!(naive_is_peo(&graph, &peo));
+        }
+    }
+    #[test]
+    fn test_dataset4() {
+        test_dataset("dataset/chordal4.g6");
+    }
+    #[test]
+    fn test_dataset5() {
+        test_dataset("dataset/chordal5.g6");
+    }
+    #[test]
+    fn test_dataset6() {
+        test_dataset("dataset/chordal6.g6");
+    }
+    #[test]
+    fn test_dataset7() {
+        test_dataset("dataset/chordal7.g6");
     }
 }
