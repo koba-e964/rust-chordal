@@ -6,7 +6,7 @@ pub mod dataset;
 // Adjacency list
 pub type Graph = Vec<Vec<usize>>;
 
-// Given a graph and reversed peo, checks if peo is a reversed PEO.
+// Given a graph and a sequence rev_peo, checks if rev_peo is a reversed PEO.
 // O(V + E)-time
 fn check_peo(g: &Graph, rev_peo: &[usize]) -> bool {
     let n = g.len();
