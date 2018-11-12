@@ -1,1 +1,1 @@
-The files of this directory (`chordal?.g6`) are taken from [https://users.cecs.anu.edu.au/~bdm/data/graphs.html](https://users.cecs.anu.edu.au/~bdm/data/graphs.html).
+The files of this directory (`chordal?.g6`, `graph?.g6`) are taken from [https://users.cecs.anu.edu.au/~bdm/data/graphs.html](https://users.cecs.anu.edu.au/~bdm/data/graphs.html).
