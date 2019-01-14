@@ -2,5 +2,12 @@
 name = "rust-chordal"
 version = "0.1.0"
 authors = ["koba-e964 <3303362+koba-e964@users.noreply.github.com>"]
+description = "Chordal graph recognition"
+include = [
+    "**/*.rs",
+    "Cargo.toml",
+]
+license = "MIT"
+repository = "https://github.com/koba-e964/rust-chordal"
 
 [dependencies]
